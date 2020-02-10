@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>cheatsheet</title>
+<link rel="stylesheet" href="http://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/themes/prism.css">
+<style>
+.nav-link {
+    cursor: pointer;
+}
+#main {
+    table-layout: fixed;
+    width: 100%;
+}
+#main td {
+    vertical-align: top;
+    padding: 0.5em;
+}
+pre {
+    white-space: pre-wrap;
+    display: inline-block;
+    width: 100%;
+}
+pre file {
+    color: #808080;
+    background-color: #eeeeee;
+    padding: 0.1em 1em;
+}
+samp div {
+    color: #808080;
+    display: inline-block;
+    padding-left: 1em;
+}
+samp::before {
+    content: "Out:";
+    color: #e83e8c;
+    vertical-align: top;
+}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+    <a class="navbar-brand" href="/">cheatsheet</a>
+    <ul class="navbar-nav mr-auto" id="menu">
+    </ul>
+</nav>
+<div class="container-fluid">
+    <table id="main">
+    </table>
+</div>
+<script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="http://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="http://stackpath.bootstrapcdn.com/bootstrap/4.4.0/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/prism.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-python.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-perl.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-bash.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-shell-session.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-clike.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-markup-templating.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-php.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-javascript.min.js"></script>
+<script>
+const allLangs = ["python","perl","bash","php","javascript"];
+const urlParms = new URLSearchParams(window.location.search);
+var chap = urlParms.get("chap") || "hello";
+var sect = urlParms.get("sect") || "hello";
+var langs = urlParms.get("langs");
+langs = langs ? langs.split(",").filter(v => allLangs.includes(v)) : allLangs;
+
+function getQstr(chap, sect, lang) {
+    if (lang == null) newlangs = langs;
+    else if (langs.includes(lang)) newlangs = langs.filter(v => v != lang);
+    else newlangs = langs.concat(lang);
+    return `?chap=${chap}&sect=${sect}&langs=${newlangs}`;
+}
+
+function makeMenu(menu) {
+    let li = $(`<li class="nav-item dropdown">`).appendTo("#menu");
+    let a = $(`<a class="nav-link dropdown-toggle" data-toggle="dropdown">langs</a>`).appendTo(li);
+    let div = $(`<div class="dropdown-menu">`).appendTo(li);
+    for (let lang of allLangs) {
+        let clsname = "dropdown-item" + (langs.includes(lang) ? " text-primary" : "");
+        let a = $(`<a class="${clsname}" href="${getQstr(chap, sect, lang)}">${lang}</a>`).appendTo(div);
+    }
+    for (let chap in menu) {
+        let li = $(`<li class="nav-item dropdown">`).appendTo("#menu");
+        let a = $(`<a class="nav-link dropdown-toggle" data-toggle="dropdown">${chap}</a>`).appendTo(li);
+        let div = $(`<div class="dropdown-menu">`).appendTo(li);
+        for (let sect of menu[chap]) {
+            let clsname = "dropdown-item" + (window.chap == chap && window.sect == sect ? " text-primary" : "");
+            let a = $(`<a class="${clsname}" href="${getQstr(chap, sect)}">${sect}</a>`).appendTo(div);
+        }
+    }
+}
+
+$.get("/menu.json", makeMenu);
+
+function loadCode() {
+    let loadcount = 0;
+    for (let lang of langs) {
+        let col = $("<td>").appendTo("#main");
+        col.load(`${chap}/${sect}/${lang}.html`, (data, stat) => {
+            if (stat == "error") col.html("<pre>\n\nNo Data.\n\n</pre>");
+            if (++loadcount == langs.length) Prism.highlightAll();
+        });
+    }
+}
+
+$(loadCode);
+</script>
+</body>
+</html>

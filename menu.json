@@ -1,0 +1,5 @@
+{
+    "hello": ["hello"],
+    "conditions": ["if-else", "try-catch"],
+    "loops": ["for", "foreach", "while"]
+}
