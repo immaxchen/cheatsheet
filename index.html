@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>cheatsheet</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/themes/prism.css">
 <style>
 .nav-link {
@@ -42,7 +42,7 @@ samp::before {
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
-    <a class="navbar-brand" href="/">cheatsheet</a>
+    <a class="navbar-brand" href="/cheatsheet">cheatsheet</a>
     <ul class="navbar-nav mr-auto" id="menu">
     </ul>
 </nav>
@@ -50,9 +50,9 @@ samp::before {
     <table id="main">
     </table>
 </div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-perl.min.js"></script>
@@ -63,10 +63,11 @@ samp::before {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-php.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/components/prism-javascript.min.js"></script>
 <script>
+const root = "/cheatsheet";
 const allLangs = ["python","perl","bash","php","javascript"];
 const urlParms = new URLSearchParams(window.location.search);
-var chap = urlParms.get("chap") || "hello";
-var sect = urlParms.get("sect") || "hello";
+var chap = urlParms.get("chap") || "basics";
+var sect = urlParms.get("sect") || "hello-world";
 var langs = urlParms.get("langs");
 langs = langs ? langs.split(",").filter(v => allLangs.includes(v)) : allLangs;
 
@@ -96,13 +97,13 @@ function makeMenu(menu) {
     }
 }
 
-$.get("menu.json", makeMenu);
+$.get(`${root}/menu.json`, makeMenu);
 
 function loadCode() {
     let loadcount = 0;
     for (let lang of langs) {
         let col = $("<td>").appendTo("#main");
-        col.load(`${chap}/${sect}/${lang}.html`, (data, stat) => {
+        col.load(`${root}/${chap}/${sect}/${lang}.html`, (data, stat) => {
             if (stat == "error") col.html("<pre>\n\nNo Data.\n\n</pre>");
             if (++loadcount == langs.length) Prism.highlightAll();
         });
