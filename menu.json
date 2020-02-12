@@ -1,5 +1,34 @@
 {
     "basics": [
-        "hello-world"
+        "comments",
+        "hello-world",
+        "math-operators",
+        "variables"
+    ],
+    "collections": [
+        "array-list",
+        "dictionary",
+        "hashset"
+    ],
+    "conditions": [
+        "comparison-operators",
+        "if-else",
+        "logical-operators"
+    ],
+    "loops": [
+        "for-loop",
+        "foreach",
+        "while-loop"
+    ],
+    "strings": [
+        "concat",
+        "format",
+        "join",
+        "split"
+    ],
+    "structures": [
+        "functions",
+        "modules",
+        "oop"
     ]
 }
